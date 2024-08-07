@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Term Surrounder</title>
+	<style>
+		:root {
+			--primary-color: #2c3e50;
+			--secondary-color: #34495e;
+			--accent-color: #27ae60;
+			--background-color: #ecf0f1;
+			--card-background: #ffffff;
+		}
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+			background-color: var(--background-color);
+			color: var(--primary-color);
+			line-height: 1.6;
+			margin: 0;
+			padding: 20px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+		}
+		.container {
+			background-color: var(--card-background);
+			border-radius: 8px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			padding: 2rem;
+			width: 100%;
+			max-width: 600px;
+		}
+		h1 {
+			color: var(--accent-color);
+			margin-top: 0;
+			margin-bottom: 0.5rem;
+		}
+		p {
+			color: var(--secondary-color);
+			margin-bottom: 1.5rem;
+		}
+		textarea {
+			width: 100%;
+			height: 150px;
+			padding: 0.5rem;
+			margin-bottom: 1rem;
+			border: 1px solid var(--secondary-color);
+			border-radius: 4px;
+			resize: vertical;
+		}
+		button {
+			background-color: var(--accent-color);
+			color: white;
+			border: none;
+			padding: 0.5rem 1rem;
+			border-radius: 4px;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
+		button:hover {
+			background-color: #219a52;
+		}
+		#stats {
+			margin-top: 1rem;
+			font-size: 0.875rem;
+			color: var(--secondary-color);
+		}
+		.button-group {
+			display: flex;
+			gap: 1rem;
+			margin-bottom: 1rem;
+		}
+		@keyframes fadeIn {
+			from { opacity: 0; }
+			to { opacity: 1; }
+		}
+		.fade-in {
+			animation: fadeIn 0.5s ease-in-out;
+		}
+	</style>
+</head>
+<body>
+	<div class="container fade-in">
+		<h1>Term Surrounder</h1>
+		<p>Easily surround each line of your search terms with quotes. Perfect for preparing precise search queries. Paste your terms (one per line), click to add quotes, and copy the result. All processing happens in your browser - no data is transferred.</p>
+		<textarea id="input" placeholder="Paste your search terms here, one per line..."></textarea>
+		<div class="button-group">
+			<button onclick="processText()">Surround with Quotes</button>
+			<button onclick="copyToClipboard()">Copy to Clipboard</button>
+		</div>
+		<textarea id="output" readonly></textarea>
+		<div id="stats"></div>
+	</div>
+
+	<script>
+		function processText() {
+			const input = document.getElementById('input').value;
+			const lines = input.split('\n');
+			const processedLines = lines.map(line => `"${line.trim()}"`);
+			const output = processedLines.join('\n');
+			
+			document.getElementById('output').value = output;
+			updateStats(lines.length, processedLines.length);
+		}
+
+		function copyToClipboard() {
+			const output = document.getElementById('output');
+			output.select();
+			document.execCommand('copy');
+			
+			const button = event.target;
+			const originalText = button.textContent;
+			button.textContent = 'Copied!';
+			button.style.backgroundColor = '#2ecc71';
+			
+			setTimeout(() => {
+				button.textContent = originalText;
+				button.style.backgroundColor = '';
+			}, 2000);
+		}
+
+		function updateStats(inputLines, outputLines) {
+			const stats = document.getElementById('stats');
+			stats.innerHTML = `
+				<strong>Input terms:</strong> ${inputLines}
+				&nbsp;|&nbsp;
+				<strong>Output terms:</strong> ${outputLines}
+			`;
+			stats.classList.add('fade-in');
+			setTimeout(() => stats.classList.remove('fade-in'), 500);
+		}
+	</script>
+</body>
+</html>
